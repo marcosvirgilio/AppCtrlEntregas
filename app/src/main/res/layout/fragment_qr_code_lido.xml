@@ -47,13 +47,13 @@
                 android:id="@+id/btConfirmar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Button" />
+                android:text="@string/title_confirmar" />
 
             <Button
                 android:id="@+id/btCancelar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Button" />
+                android:text="@string/title_cancelar" />
         </LinearLayout>
     </ScrollView>
 </FrameLayout>
