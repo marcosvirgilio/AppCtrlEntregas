@@ -79,9 +79,9 @@ public class QRCodeFragment extends Fragment {
             QRCodeSingleton singleton = QRCodeSingleton.getInstance();
             singleton.setQrCode(barcodes.get(0).getDisplayValue());
             //chamando navegação
-            NavController navController = Navigation.findNavController(view);
-            navController.navigateUp();
-            navController.navigate(R.id.navigation_home);
+            NavController navController = QRCodeSingleton.getInstance().getNavController();
+            navController.navigate(R.id.navigation_qrcode_lido);
+
 
             //Toast.makeText(this, barcodes.get(0).getDisplayValue(), Toast.LENGTH_SHORT).show();
         }

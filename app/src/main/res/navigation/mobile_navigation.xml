@@ -22,7 +22,11 @@
         android:name="br.dev.marcosvirgilio.mobile.ctrlentregas.ui.qrcode.QRCodeFragment"
         android:label="@string/title_qrcode"
         tools:layout="@layout/fragment_qr_code" />
-
+    <fragment
+        android:id="@+id/navigation_qrcode_lido"
+        android:name="br.dev.marcosvirgilio.mobile.ctrlentregas.ui.qrcode.QRCodeLidoFragment"
+        android:label="@string/title_qrcode"
+        tools:layout="@layout/fragment_qr_code_lido" />
 
 
 </navigation>
