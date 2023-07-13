@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Controle de Entegas</string>
+    <string name="title_home">Home</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_qrcode">QRCode</string>
+    <string name="title_qrcode_resultado">Identificação</string>
+    <string name="id">Matrícula</string>
+    <string name="nome">Nome</string>
+    <string name="confirmar">Confirmar</string>
+    <string name="cancelar">Cancelar</string>
+</resources>
