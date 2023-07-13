@@ -24,6 +24,9 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         root = binding.getRoot();
         this.tvScan = binding.textHome;
+        //mostrando valor do singleton
+        QRCodeSingleton singleton = QRCodeSingleton.getInstance();
+        this.tvScan.setText(singleton.getQrCode());
         return root;
     }
 
@@ -36,8 +39,6 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        //mostrando valor do singleton
-        QRCodeSingleton singleton = QRCodeSingleton.getInstance();
-        this.tvScan.setText(singleton.getQrCode());
+
     }
 }

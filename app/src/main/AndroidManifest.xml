@@ -19,12 +19,6 @@
         android:theme="@style/Theme.ControleDeEntegas"
         tools:targetApi="31">
         <activity
-            android:name=".ui.qrcode.QRCodeResultadoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.qrcode.QRCodeActivity"
-            android:exported="false" />
-        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name">

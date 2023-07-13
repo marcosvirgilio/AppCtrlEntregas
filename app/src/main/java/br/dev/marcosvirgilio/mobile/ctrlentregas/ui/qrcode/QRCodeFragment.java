@@ -1,7 +1,11 @@
 package br.dev.marcosvirgilio.mobile.ctrlentregas.ui.qrcode;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.ImageProxy;
@@ -10,15 +14,14 @@ import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.content.pm.PackageManager;
-import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.common.util.concurrent.ListenableFuture;
@@ -34,9 +37,9 @@ import java.util.concurrent.Executors;
 
 import br.dev.marcosvirgilio.mobile.ctrlentregas.QRCodeSingleton;
 import br.dev.marcosvirgilio.mobile.ctrlentregas.R;
-import br.dev.marcosvirgilio.mobile.ctrlentregas.ui.notifications.NotificationsFragment;
 
-public class QRCodeActivity extends AppCompatActivity {
+
+public class QRCodeFragment extends Fragment {
 
     //qrcode
     private static final String TAG = "MLKit Barcode";
@@ -47,42 +50,38 @@ public class QRCodeActivity extends AppCompatActivity {
     private ProcessCameraProvider cameraProvider;
     private Preview previewUseCase;
     private ImageAnalysis analysisUseCase;
+    private View view = null;
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_qrcode);
-        //qrcode
-        previewView = findViewById(R.id.previewView);
-    }
 
+
+    }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, int[] grantResults) {
-        for (int r : grantResults) {
-            if (r == PackageManager.PERMISSION_DENIED) {
-                Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
-                return;
-            }
-        }
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        view = inflater.inflate(R.layout.fragment_qr_code, container, false);
 
-        if (requestCode == PERMISSION_CODE) {
-            setupCamera();
-        }
+        //qrcode
+        previewView = this.view.findViewById(R.id.previewView);
+        InicializarCamera();
 
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        return view;
     }
 
-
-    private void onSuccessListener(List<Barcode> barcodes) {
+      private void onSuccessListener(List<Barcode> barcodes) {
         if (barcodes.size() > 0) {
             //colocando valor lido no singleton
             QRCodeSingleton singleton = QRCodeSingleton.getInstance();
             singleton.setQrCode(barcodes.get(0).getDisplayValue());
             //chamando navegação
-            NavController navController = Navigation.findNavController(this.getParent(), R.id.navigation_notifications);
+            NavController navController = Navigation.findNavController(view);
             navController.navigateUp();
-            navController.navigate(R.id.navigation_notifications);
+            navController.navigate(R.id.navigation_home);
 
             //Toast.makeText(this, barcodes.get(0).getDisplayValue(), Toast.LENGTH_SHORT).show();
         }
@@ -164,9 +163,9 @@ public class QRCodeActivity extends AppCompatActivity {
         }
     }
 
-    private void setupCamera() {
+    private void InicializarCamera() {
         final ListenableFuture<ProcessCameraProvider> cameraProviderFuture =
-                ProcessCameraProvider.getInstance(this);
+                ProcessCameraProvider.getInstance(view.getContext());
 
         int lensFacing = CameraSelector.LENS_FACING_BACK;
         cameraSelector = new CameraSelector.Builder().requireLensFacing(lensFacing).build();
@@ -178,24 +177,9 @@ public class QRCodeActivity extends AppCompatActivity {
             } catch (ExecutionException | InterruptedException e) {
                 Log.e(TAG, "cameraProviderFuture.addListener Error", e);
             }
-        }, ContextCompat.getMainExecutor(this));
+        }, ContextCompat.getMainExecutor(view.getContext()));
     }
 
-    private void getPermissions() {
-        ActivityCompat.requestPermissions(this, new String[]{CAMERA_PERMISSION}, PERMISSION_CODE);
-    }
 
-    public void startCamera() {
-        if(ContextCompat.checkSelfPermission(this, CAMERA_PERMISSION) == PackageManager.PERMISSION_GRANTED) {
-            setupCamera();
-        } else {
-            getPermissions();
-        }
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        startCamera();
-    }
 }

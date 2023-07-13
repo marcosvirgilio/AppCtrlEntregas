@@ -17,15 +17,12 @@
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
 
-    <activity
+    <fragment
         android:id="@+id/navigation_qrcode"
-        android:name="br.dev.marcosvirgilio.mobile.ctrlentregas.ui.qrcode.QRCodeActivity"
+        android:name="br.dev.marcosvirgilio.mobile.ctrlentregas.ui.qrcode.QRCodeFragment"
         android:label="@string/title_qrcode"
-        tools:layout="@layout/activity_qrcode" />
+        tools:layout="@layout/fragment_qr_code" />
 
-    <activity
-        android:id="@+id/navigation_qrcode_resultado"
-        android:name="br.dev.marcosvirgilio.mobile.ctrlentregas.ui.qrcode.QRCodeResultadoActivity"
-        android:label="@string/title_qrcode_resultado"
-        tools:layout="@layout/activity_qrcode_resultado"/>
+
+
 </navigation>
