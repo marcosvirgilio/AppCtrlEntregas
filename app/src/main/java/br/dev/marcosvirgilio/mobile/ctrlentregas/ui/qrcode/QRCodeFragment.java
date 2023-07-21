@@ -2,7 +2,6 @@ package br.dev.marcosvirgilio.mobile.ctrlentregas.ui.qrcode;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,18 +11,22 @@ import androidx.camera.core.ImageProxy;
 import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.mlkit.vision.barcode.BarcodeScanner;
 import com.google.mlkit.vision.barcode.BarcodeScanning;
@@ -35,11 +38,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import br.dev.marcosvirgilio.mobile.ctrlentregas.QRCodeSingleton;
+import br.dev.marcosvirgilio.mobile.ctrlentregas.Singleton;
 import br.dev.marcosvirgilio.mobile.ctrlentregas.R;
+import br.dev.marcosvirgilio.mobile.ctrlentregas.model.Aluno;
 
 
-public class QRCodeFragment extends Fragment {
+public class QRCodeFragment extends Fragment implements  Response.ErrorListener, Response.Listener {
 
     //qrcode
     private static final String TAG = "MLKit Barcode";
@@ -51,6 +55,10 @@ public class QRCodeFragment extends Fragment {
     private Preview previewUseCase;
     private ImageAnalysis analysisUseCase;
     private View view = null;
+    //volley
+    private RequestQueue requestQueue;
+    private JsonObjectRequest jsonObjectReq;
+
 
 
     @Override
@@ -70,18 +78,30 @@ public class QRCodeFragment extends Fragment {
         previewView = this.view.findViewById(R.id.previewView);
         InicializarCamera();
 
+        //instanciando a fila de requests - caso o objeto seja o view
+        this.requestQueue = Volley.newRequestQueue(view.getContext());
+//inicializando a fila de requests do SO
+        this.requestQueue.start();
+
+
         return view;
     }
 
       private void onSuccessListener(List<Barcode> barcodes) {
         if (barcodes.size() > 0) {
-            //colocando valor lido no singleton
-            QRCodeSingleton singleton = QRCodeSingleton.getInstance();
-            singleton.setQrCode(barcodes.get(0).getDisplayValue());
-            //chamando navegação
-            NavController navController = QRCodeSingleton.getInstance().getNavController();
-            navController.navigate(R.id.navigation_qrcode_lido);
 
+            //buscando qrLido na base de codigos de matrículas
+
+            Aluno a = new Aluno();
+            a.setMatricula(barcodes.get(0).getDisplayValue());
+            //colocando matricula lida qrcode no singleton
+            Singleton singleton = Singleton.getInstance();
+            singleton.setAluno(a);
+            //chamar REST consultar aluno aqui
+            jsonObjectReq = new JsonObjectRequest(
+                    Request.Method.POST,"http://10.0.2.2/conmatricula.php",
+                    a.toJsonObject(), this, this);
+            requestQueue.add(jsonObjectReq);
 
             //Toast.makeText(this, barcodes.get(0).getDisplayValue(), Toast.LENGTH_SHORT).show();
         }
@@ -181,5 +201,17 @@ public class QRCodeFragment extends Fragment {
     }
 
 
+    @Override
+    public void onErrorResponse(VolleyError error) {
 
+    }
+
+    @Override
+    public void onResponse(Object response) {
+        Snackbar.make(view,"Mensagem desejada!",Snackbar.LENGTH_LONG).show();
+        //chamando navegação
+        NavController navController = Singleton.getInstance().getNavController();
+        navController.navigate(R.id.navigation_qrcode_lido);
+
+    }
 }

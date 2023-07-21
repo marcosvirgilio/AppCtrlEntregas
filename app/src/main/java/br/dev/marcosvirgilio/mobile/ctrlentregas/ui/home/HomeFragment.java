@@ -8,9 +8,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
-import br.dev.marcosvirgilio.mobile.ctrlentregas.QRCodeSingleton;
 import br.dev.marcosvirgilio.mobile.ctrlentregas.databinding.FragmentHomeBinding;
 
 public class HomeFragment extends Fragment {

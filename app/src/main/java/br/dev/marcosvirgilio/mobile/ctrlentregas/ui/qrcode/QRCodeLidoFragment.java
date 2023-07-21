@@ -11,11 +11,21 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import br.dev.marcosvirgilio.mobile.ctrlentregas.QRCodeSingleton;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.android.material.snackbar.Snackbar;
+
+import br.dev.marcosvirgilio.mobile.ctrlentregas.Singleton;
 import br.dev.marcosvirgilio.mobile.ctrlentregas.R;
+import br.dev.marcosvirgilio.mobile.ctrlentregas.model.Aluno;
 
 
-public class QRCodeLidoFragment extends Fragment implements View.OnClickListener {
+public class QRCodeLidoFragment extends Fragment implements View.OnClickListener, Response.ErrorListener, Response.Listener {
 
     private EditText etCd;
     private EditText etNm;
@@ -24,12 +34,15 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
     private NavController navController;
     View view;
 
+    //volley
+    private RequestQueue requestQueue;
+    private JsonObjectRequest jsonObjectReq;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.navController  = QRCodeSingleton.getInstance().getNavController();
+        this.navController  = Singleton.getInstance().getNavController();
 
     }
 
@@ -46,8 +59,14 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
         this.btCancelar.setOnClickListener(this);
         this.btConfirmar.setOnClickListener(this);
         //mostrando valor do singleton
-        QRCodeSingleton singleton = QRCodeSingleton.getInstance();
-        this.etCd.setText(singleton.getQrCode());
+        Singleton singleton = Singleton.getInstance();
+        this.etCd.setText(singleton.getAluno().getMatricula());
+
+        //instanciando a fila de requests - caso o objeto seja o view
+        this.requestQueue = Volley.newRequestQueue(view.getContext());
+//inicializando a fila de requests do SO
+        this.requestQueue.start();
+
 
         return this.view;
     }
@@ -55,12 +74,32 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.btConfirmar) {
-            //chamando navegação
-            navController.navigate(R.id.navigation_qrcode);
+            //chamar REST salvar aqui
+            Aluno a = new Aluno();
+            a.setMatricula(this.etCd.getText().toString());
+            a.setNome(this.etNm.getText().toString());
+            jsonObjectReq = new JsonObjectRequest(
+                    Request.Method.POST,
+                    "http://10.0.2.2/cadentrega.php",
+                    a.toJsonObject(), this, this);
+            requestQueue.add(jsonObjectReq);
         }
         if (view.getId() == R.id.btCancelar) {
             //chamando navegação
             navController.navigate(R.id.navigation_qrcode);
         }
+    }
+
+    @Override
+    public void onErrorResponse(VolleyError error) {
+
+    }
+
+    @Override
+    public void onResponse(Object response) {
+        Snackbar.make(view,"Mensagem desejada!",Snackbar.LENGTH_LONG).show();
+        //chamando navegação
+        navController.navigate(R.id.navigation_qrcode);
+
     }
 }
