@@ -20,6 +20,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.snackbar.Snackbar;
 
+import org.json.JSONObject;
+
 import br.dev.marcosvirgilio.mobile.ctrlentregas.Singleton;
 import br.dev.marcosvirgilio.mobile.ctrlentregas.R;
 import br.dev.marcosvirgilio.mobile.ctrlentregas.model.Aluno;
@@ -61,6 +63,7 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
         //mostrando valor do singleton
         Singleton singleton = Singleton.getInstance();
         this.etCd.setText(singleton.getAluno().getMatricula());
+        this.etNm.setText(singleton.getAluno().getNome());
 
         //instanciando a fila de requests - caso o objeto seja o view
         this.requestQueue = Volley.newRequestQueue(view.getContext());
@@ -97,7 +100,21 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onResponse(Object response) {
-        Snackbar.make(view,"Mensagem desejada!",Snackbar.LENGTH_LONG).show();
+        try {
+            String resposta = response.toString();
+            //convertendo resposta strin to json
+            JSONObject jor = new JSONObject(resposta);
+            Aluno ar = new Aluno(jor);
+            if (ar.getNome().equals("erro")){
+                //mostrar mensagem de erro na tela
+                Snackbar.make(view,"Não foi possível registrar a entrega! Anote no formulário",Snackbar.LENGTH_LONG).show();
+            } else {
+                //mostrar mensagem de sucesso na tela
+                Snackbar.make(view,"Registro realizado com sucesso, abrindo nova leitura",Snackbar.LENGTH_LONG).show();
+                //chamando navegação
+                navController.navigate(R.id.navigation_qrcode);
+            }
+        } catch (Exception e) {  e.printStackTrace(); }
         //chamando navegação
         navController.navigate(R.id.navigation_qrcode);
 

@@ -33,6 +33,8 @@ import com.google.mlkit.vision.barcode.BarcodeScanning;
 import com.google.mlkit.vision.barcode.common.Barcode;
 import com.google.mlkit.vision.common.InputImage;
 
+import org.json.JSONObject;
+
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -208,10 +210,24 @@ public class QRCodeFragment extends Fragment implements  Response.ErrorListener,
 
     @Override
     public void onResponse(Object response) {
-        Snackbar.make(view,"Mensagem desejada!",Snackbar.LENGTH_LONG).show();
-        //chamando navegação
-        NavController navController = Singleton.getInstance().getNavController();
-        navController.navigate(R.id.navigation_qrcode_lido);
+
+        try {
+            String resposta = response.toString();
+            //convertendo resposta strin to json
+            JSONObject jor = new JSONObject(resposta);
+            Aluno ar = new Aluno(jor);
+            if (ar.getNome().equals("erro")){
+                //mostrar mensagem de erro na tela
+                Snackbar.make(view,"Matrícula Inválida",Snackbar.LENGTH_LONG).show();
+            } else {
+                //guardar objeto aluno com nome no Singletom
+                Singleton.getInstance().setAluno(ar);
+                //chamando navegação para tela de confirmação de entrega
+                NavController navController = Singleton.getInstance().getNavController();
+                navController.navigate(R.id.navigation_qrcode_lido);
+            }
+        } catch (Exception e) {  e.printStackTrace(); }
+
 
     }
 }
