@@ -83,7 +83,7 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
             a.setNome(this.etNm.getText().toString());
             jsonObjectReq = new JsonObjectRequest(
                     Request.Method.POST,
-                    "http://10.0.2.2/cadentrega.php",
+                    "http://10.0.2.2/ctrlentregas/cadentrega.php",
                     a.toJsonObject(), this, this);
             requestQueue.add(jsonObjectReq);
         }
@@ -104,19 +104,22 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
             String resposta = response.toString();
             //convertendo resposta strin to json
             JSONObject jor = new JSONObject(resposta);
-            Aluno ar = new Aluno(jor);
-            if (ar.getNome().equals("erro")){
-                //mostrar mensagem de erro na tela
-                Snackbar.make(view,"Não foi possível registrar a entrega! Anote no formulário",Snackbar.LENGTH_LONG).show();
-            } else {
-                //mostrar mensagem de sucesso na tela
-                Snackbar.make(view,"Registro realizado com sucesso, abrindo nova leitura",Snackbar.LENGTH_LONG).show();
-                //chamando navegação
+            if (jor.getBoolean("sucesso")){
+                //guardar objeto aluno com nome no Singletom
+                Aluno ar = new Aluno(jor);
+                ar.setMatricula(jor.getString("matricula"));
+                ar.setNome(jor.getString("nome"));
+                Singleton.getInstance().setAluno(ar);
+                //mostrar mensagem de sucesso
+                Snackbar.make(view,jor.getString("mensagem"),Snackbar.LENGTH_LONG).show();
+                NavController navController = Singleton.getInstance().getNavController();
                 navController.navigate(R.id.navigation_qrcode);
+            } else {
+                //mostrar mensagem de erro na tela
+                Snackbar.make(view,jor.getString("mensagem"),Snackbar.LENGTH_LONG).show();
             }
         } catch (Exception e) {  e.printStackTrace(); }
-        //chamando navegação
-        navController.navigate(R.id.navigation_qrcode);
+
 
     }
 }
