@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 
 import com.android.volley.Request;
@@ -41,20 +42,15 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
     private JsonObjectRequest jsonObjectReq;
 
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        this.navController  = Singleton.getInstance().getNavController();
-
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         this.view = inflater.inflate(R.layout.fragment_qr_code_lido, container, false);
-
+        this.navController  = Singleton.getInstance().getNavController();
         this.etCd = view.findViewById(R.id.etCodigo);
+        this.etNm = view.findViewById(R.id.etNome);
         this.btCancelar = view.findViewById(R.id.btCancelar);
         this.btConfirmar = view.findViewById(R.id.btConfirmar);
 
@@ -83,7 +79,7 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
             a.setNome(this.etNm.getText().toString());
             jsonObjectReq = new JsonObjectRequest(
                     Request.Method.POST,
-                    "http://10.0.2.2/ctrlentregas/cadentrega.php",
+                    "http://192.168.5.165/ctrlentregas/cadprotocolo.php",
                     a.toJsonObject(), this, this);
             requestQueue.add(jsonObjectReq);
         }
@@ -95,7 +91,7 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onErrorResponse(VolleyError error) {
-
+        Toast.makeText(getContext(), error.toString(), Toast.LENGTH_SHORT).show();
     }
 
     @Override

@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -70,19 +71,6 @@ public class QRCodeFragment extends Fragment implements  Response.ErrorListener,
     private JsonObjectRequest jsonObjectReq;
 
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        cameraPreview = view.findViewById(R.id.camera_preview);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        startCamera();
-    }
-
-
 
     private void getPermissions() {
         ActivityCompat.requestPermissions(getActivity(), new String[]{CAMERA_PERMISSION}, PERMISSION_CODE);
@@ -93,15 +81,12 @@ public class QRCodeFragment extends Fragment implements  Response.ErrorListener,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_qr_code, container, false);
-        //qr code
-
-
-
+        cameraPreview = view.findViewById(R.id.camera_preview);
         //instanciando a fila de requests - caso o objeto seja o view
         this.requestQueue = Volley.newRequestQueue(view.getContext());
         //inicializando a fila de requests do SO
         this.requestQueue.start();
-
+        //qr code
         startCamera();
 
         return view;
@@ -212,33 +197,25 @@ public class QRCodeFragment extends Fragment implements  Response.ErrorListener,
 
     private void onSuccessListener(List<Barcode> barcodes) {
         if (barcodes.size() > 0) {
-            Toast.makeText(getContext(), barcodes.get(0).getDisplayValue(), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getContext(), barcodes.get(0).getDisplayValue(), Toast.LENGTH_SHORT).show();
+            Aluno a = new Aluno();
+            a.setMatricula( barcodes.get(0).getDisplayValue());
+            a.setNome("");
+            //colocando objeto aluno no singleton
+            Singleton singleton = Singleton.getInstance();
+            singleton.setAluno(a);
+            //chamar REST consultar aluno aqui
+            jsonObjectReq = new JsonObjectRequest(
+                    Request.Method.POST,"http://192.168.5.165/ctrlentregas/conmatricula.php",
+                    a.toJsonObject(), this, this);
+            requestQueue.add(jsonObjectReq);
         }
     }
 
-    /****************************************
-    private void processQrCodeResults(Result result) {
-        String qrCodeValue = result.getText();
-
-        // Do something with the QR code value
-        //Log.d("QR Code", qrCodeValue);
-
-        Aluno a = new Aluno();
-        a.setMatricula(qrCodeValue);
-        //colocando matricula lida qrcode no singleton
-        Singleton singleton = Singleton.getInstance();
-        singleton.setAluno(a);
-        //chamar REST consultar aluno aqui
-        jsonObjectReq = new JsonObjectRequest(
-                Request.Method.POST,"http://10.0.2.2/ctrlentregas/conmatricula.php",
-                a.toJsonObject(), this, this);
-        requestQueue.add(jsonObjectReq);
-    }
-
-     */
 
     @Override
     public void onErrorResponse(VolleyError error) {
+        Toast.makeText(getContext(), error.toString(), Toast.LENGTH_SHORT).show();
 
     }
 
