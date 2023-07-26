@@ -46,7 +46,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import br.dev.marcosvirgilio.mobile.ctrlentregas.Singleton;
+import br.dev.marcosvirgilio.mobile.ctrlentregas.util.Constantes;
+import br.dev.marcosvirgilio.mobile.ctrlentregas.util.Singleton;
 import br.dev.marcosvirgilio.mobile.ctrlentregas.R;
 import br.dev.marcosvirgilio.mobile.ctrlentregas.model.Aluno;
 
@@ -55,7 +56,7 @@ public class QRCodeFragment extends Fragment implements  Response.ErrorListener,
 
     //qrcode
     private static final int CAMERA_PERMISSION_REQUEST = 101;
-    private static final String TAG = "MLKit Barcode";
+    private static final String TAG = "QRCode";
     private static final int PERMISSION_CODE = 1001;
     private static final String CAMERA_PERMISSION = Manifest.permission.CAMERA;
     private PreviewView cameraPreview;
@@ -197,16 +198,21 @@ public class QRCodeFragment extends Fragment implements  Response.ErrorListener,
 
     private void onSuccessListener(List<Barcode> barcodes) {
         if (barcodes.size() > 0) {
-            //Toast.makeText(getContext(), barcodes.get(0).getDisplayValue(), Toast.LENGTH_SHORT).show();
+            //extraindo matricula da url da carteirinha
+            String urlLida = barcodes.get(0).getDisplayValue();
+            String matricula = urlLida.replace("http://carteirinha.chapeco.ifsc.edu.br/","");
+            //mensagem matricula lida
+            Snackbar.make(view,matricula,Snackbar.LENGTH_LONG).show();
+            //objeto aluno
             Aluno a = new Aluno();
-            a.setMatricula( barcodes.get(0).getDisplayValue());
+            a.setMatricula(matricula);
             a.setNome("");
             //colocando objeto aluno no singleton
             Singleton singleton = Singleton.getInstance();
             singleton.setAluno(a);
             //chamar REST consultar aluno aqui
             jsonObjectReq = new JsonObjectRequest(
-                    Request.Method.POST,"http://192.168.5.165/ctrlentregas/conmatricula.php",
+                    Request.Method.POST, Constantes.getServidor() + Constantes.getEndPointConMatricula(),
                     a.toJsonObject(), this, this);
             requestQueue.add(jsonObjectReq);
         }
@@ -215,7 +221,7 @@ public class QRCodeFragment extends Fragment implements  Response.ErrorListener,
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        Toast.makeText(getContext(), error.toString(), Toast.LENGTH_SHORT).show();
+        Snackbar.make(view, error.toString(),Snackbar.LENGTH_LONG).show();
 
     }
 

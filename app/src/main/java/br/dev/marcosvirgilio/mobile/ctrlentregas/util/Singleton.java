@@ -1,4 +1,4 @@
-package br.dev.marcosvirgilio.mobile.ctrlentregas;
+package br.dev.marcosvirgilio.mobile.ctrlentregas.util;
 
 import androidx.navigation.NavController;
 

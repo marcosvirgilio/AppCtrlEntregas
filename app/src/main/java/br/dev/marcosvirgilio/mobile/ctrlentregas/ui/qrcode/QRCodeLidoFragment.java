@@ -23,7 +23,8 @@ import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONObject;
 
-import br.dev.marcosvirgilio.mobile.ctrlentregas.Singleton;
+import br.dev.marcosvirgilio.mobile.ctrlentregas.util.Constantes;
+import br.dev.marcosvirgilio.mobile.ctrlentregas.util.Singleton;
 import br.dev.marcosvirgilio.mobile.ctrlentregas.R;
 import br.dev.marcosvirgilio.mobile.ctrlentregas.model.Aluno;
 
@@ -78,8 +79,7 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
             a.setMatricula(this.etCd.getText().toString());
             a.setNome(this.etNm.getText().toString());
             jsonObjectReq = new JsonObjectRequest(
-                    Request.Method.POST,
-                    "http://192.168.5.165/ctrlentregas/cadprotocolo.php",
+                    Request.Method.POST,Constantes.getServidor() + Constantes.getEndPointCadProtocolo(),
                     a.toJsonObject(), this, this);
             requestQueue.add(jsonObjectReq);
         }

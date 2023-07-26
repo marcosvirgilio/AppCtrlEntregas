@@ -11,6 +11,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import br.dev.marcosvirgilio.mobile.ctrlentregas.databinding.ActivityMainBinding;
+import br.dev.marcosvirgilio.mobile.ctrlentregas.util.Singleton;
 
 public class MainActivity extends AppCompatActivity {
 
