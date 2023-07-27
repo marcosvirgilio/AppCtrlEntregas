@@ -8,6 +8,8 @@ public class Singleton {
     private static final Singleton instance = new Singleton();
     private Aluno aluno = new Aluno();
     private NavController navController = null;
+    private String mensagemErro = "";
+
     private Singleton() {}
 
     public static Singleton getInstance() {
@@ -27,5 +29,13 @@ public class Singleton {
 
     public void setNavController(NavController navController) {
         this.navController = navController;
+    }
+
+    public void setMensagemErro(String mensagem) {
+        this.mensagemErro = mensagem;
+    }
+
+    public String getMensagemErro() {
+        return mensagemErro;
     }
 }

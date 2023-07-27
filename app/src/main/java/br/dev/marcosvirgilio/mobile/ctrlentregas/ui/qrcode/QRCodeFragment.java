@@ -221,7 +221,10 @@ public class QRCodeFragment extends Fragment implements  Response.ErrorListener,
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        Snackbar.make(view, error.toString(),Snackbar.LENGTH_LONG).show();
+        Singleton.getInstance().setMensagemErro(error.toString());
+        //chamando navegação para tela de erro
+        NavController navController = Singleton.getInstance().getNavController();
+        navController.navigate(R.id.navigation_qrcode_erro);
 
     }
 
@@ -245,8 +248,11 @@ public class QRCodeFragment extends Fragment implements  Response.ErrorListener,
                 navController.navigate(R.id.navigation_qrcode_lido);
 
             } else {
-                //mostrar mensagem de erro na tela
-                Snackbar.make(view,jor.getString("mensagem"),Snackbar.LENGTH_LONG).show();
+                Singleton.getInstance().setMensagemErro(jor.getString("mensagem"));
+                //chamando navegação para tela de erro
+                NavController navController = Singleton.getInstance().getNavController();
+                navController.navigate(R.id.navigation_qrcode_erro);
+
             }
         } catch (Exception e) {  e.printStackTrace(); }
 
