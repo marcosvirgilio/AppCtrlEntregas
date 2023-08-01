@@ -52,7 +52,7 @@ import br.dev.marcosvirgilio.mobile.ctrlentregas.R;
 import br.dev.marcosvirgilio.mobile.ctrlentregas.model.Aluno;
 
 
-public class QRCodeFragment extends Fragment implements  Response.ErrorListener, Response.Listener {
+public class QRCodeFragment extends Fragment  {
 
     //qrcode
     private static final int CAMERA_PERMISSION_REQUEST = 101;
@@ -200,31 +200,27 @@ public class QRCodeFragment extends Fragment implements  Response.ErrorListener,
         if (barcodes.size() > 0) {
             //extraindo matricula da url da carteirinha
             String urlLida = barcodes.get(0).getDisplayValue();
-            String matricula = urlLida.replace("http://carteirinha.chapeco.ifsc.edu.br/","");
-            //mensagem matricula lida
-            Snackbar.make(view,matricula,Snackbar.LENGTH_LONG).show();
-            //objeto aluno
-            Aluno a = new Aluno();
-            a.setMatricula(matricula);
-            a.setNome("");
-            //colocando objeto aluno no singleton
-            Singleton singleton = Singleton.getInstance();
-            singleton.setAluno(a);
-            //chamar REST consultar aluno aqui
-            jsonObjectReq = new JsonObjectRequest(
-                    Request.Method.POST, Constantes.getServidor() + Constantes.getEndPointConMatricula(),
-                    a.toJsonObject(), this, this);
-            requestQueue.add(jsonObjectReq);
+            if (urlLida.contains("http://carteirinha.chapeco.ifsc.edu.br/")){
+                //extraindo matricula da url da carteirinha
+                String matricula = urlLida.replace("http://carteirinha.chapeco.ifsc.edu.br/","");
+                //objeto aluno
+                Aluno a = new Aluno();
+                a.setMatricula(matricula);
+                a.setNome("");
+                //colocando objeto aluno no singleton
+                Singleton singleton = Singleton.getInstance();
+                singleton.setAluno(a);
+                //chamando navegação para tela de confirmação de entrega
+                NavController navController = Singleton.getInstance().getNavController();
+                navController.navigate(R.id.navigation_qrcode_lido);
+            }
         }
     }
 
-
+    /*
     @Override
     public void onErrorResponse(VolleyError error) {
-        Singleton.getInstance().setMensagemErro(error.toString());
-        //chamando navegação para tela de erro
-        NavController navController = Singleton.getInstance().getNavController();
-        navController.navigate(R.id.navigation_qrcode_erro);
+
 
     }
 
@@ -258,4 +254,5 @@ public class QRCodeFragment extends Fragment implements  Response.ErrorListener,
 
 
     }
+    */
 }

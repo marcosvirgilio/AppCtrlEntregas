@@ -42,8 +42,6 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
     private RequestQueue requestQueue;
     private JsonObjectRequest jsonObjectReq;
 
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -54,34 +52,44 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
         this.etNm = view.findViewById(R.id.etNome);
         this.btCancelar = view.findViewById(R.id.btCancelar);
         this.btConfirmar = view.findViewById(R.id.btConfirmar);
-
-        this.btCancelar.setOnClickListener(this);
-        this.btConfirmar.setOnClickListener(this);
-        //mostrando valor do singleton
-        Singleton singleton = Singleton.getInstance();
-        this.etCd.setText(singleton.getAluno().getMatricula());
-        this.etNm.setText(singleton.getAluno().getNome());
-
         //instanciando a fila de requests - caso o objeto seja o view
         this.requestQueue = Volley.newRequestQueue(view.getContext());
-//inicializando a fila de requests do SO
+        //inicializando a fila de requests do SO
         this.requestQueue.start();
-
-
+        //desabilitando botões
+        this.ativarBotoes(false);
+        //definindo listeners
+        this.btCancelar.setOnClickListener(this);
+        this.btConfirmar.setOnClickListener(this);
+        //recuperando objeto aluno do singleton
+        Aluno a = Singleton.getInstance().getAluno();
+        if (a.getNome().equals("")) {
+            //chamar REST consultar aluno aqui
+            jsonObjectReq = new JsonObjectRequest(
+                    Request.Method.POST, Constantes.getServidor() + Constantes.getEndPointConMatricula(),
+                    a.toJsonObject(), this, this);
+            requestQueue.add(jsonObjectReq);
+        }
         return this.view;
     }
-
+    private void ativarBotoes(boolean estado) {
+        this.btCancelar.setClickable(estado);
+        this.btConfirmar.setClickable(estado);
+    }
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.btConfirmar) {
+            //objeto response
+            ConfirmarVoleyResponse response = new ConfirmarVoleyResponse(view);
             //chamar REST salvar aqui
             Aluno a = new Aluno();
             a.setMatricula(this.etCd.getText().toString());
             a.setNome(this.etNm.getText().toString());
             jsonObjectReq = new JsonObjectRequest(
                     Request.Method.POST,Constantes.getServidor() + Constantes.getEndPointCadProtocolo(),
-                    a.toJsonObject(), this, this);
+                    a.toJsonObject(), response, response);
             requestQueue.add(jsonObjectReq);
+
         }
         if (view.getId() == R.id.btCancelar) {
             //chamando navegação
@@ -91,7 +99,9 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        Toast.makeText(getContext(), error.toString(), Toast.LENGTH_SHORT).show();
+        Singleton.getInstance().setMensagemErro(error.toString());
+        //chamando navegação para tela de erro
+        Snackbar.make(view,error.toString(),Snackbar.LENGTH_LONG).show();
     }
 
     @Override
@@ -101,18 +111,23 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
             //convertendo resposta strin to json
             JSONObject jor = new JSONObject(resposta);
             if (jor.getBoolean("sucesso")){
+                //ativando botões
+                this.ativarBotoes(true);
                 //guardar objeto aluno com nome no Singletom
                 Aluno ar = new Aluno(jor);
                 ar.setMatricula(jor.getString("matricula"));
                 ar.setNome(jor.getString("nome"));
                 Singleton.getInstance().setAluno(ar);
-                //mostrar mensagem de sucesso
-                Snackbar.make(view,jor.getString("mensagem"),Snackbar.LENGTH_LONG).show();
-                NavController navController = Singleton.getInstance().getNavController();
-                navController.navigate(R.id.navigation_qrcode);
+                //mostrando retorno da consulta REST
+                this.etCd.setText(ar.getMatricula().toString());
+                this.etNm.setText(ar.getNome().toString());
+
+
             } else {
                 //mostrar mensagem de erro na tela
                 Snackbar.make(view,jor.getString("mensagem"),Snackbar.LENGTH_LONG).show();
+                Singleton.getInstance().setMensagemErro(jor.getString("mensagem"));
+
             }
         } catch (Exception e) {  e.printStackTrace(); }
 
