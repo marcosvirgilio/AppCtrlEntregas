@@ -2,6 +2,8 @@ package br.dev.marcosvirgilio.mobile.ctrlentregas.ui.qrcode;
 
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 
@@ -41,6 +43,16 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
     //volley
     private RequestQueue requestQueue;
     private JsonObjectRequest jsonObjectReq;
+
+    @Override
+    public void
+    onCreate( @Nullable Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowCustomEnabled(false);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -100,7 +112,10 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
     @Override
     public void onErrorResponse(VolleyError error) {
         Singleton.getInstance().setMensagemErro(error.toString());
-        //chamando navegação para tela de erro
+        Aluno ar = Singleton.getInstance().getAluno();
+        //mostrando retorno da consulta REST
+        this.etCd.setText(ar.getMatricula().toString());
+        this.etNm.setText(ar.getNome().toString());
         Snackbar.make(view,error.toString(),Snackbar.LENGTH_LONG).show();
     }
 
@@ -110,20 +125,17 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
             String resposta = response.toString();
             //convertendo resposta strin to json
             JSONObject jor = new JSONObject(resposta);
+            //guardar objeto aluno com nome no Singletom
+            Aluno ar = new Aluno(jor);
+            ar.setMatricula(jor.getString("matricula"));
+            ar.setNome(jor.getString("nome"));
+            Singleton.getInstance().setAluno(ar);
+            //mostrando retorno da consulta REST
+            this.etCd.setText(ar.getMatricula().toString());
             if (jor.getBoolean("sucesso")){
-                //ativando botões
-                this.ativarBotoes(true);
-                //guardar objeto aluno com nome no Singletom
-                Aluno ar = new Aluno(jor);
-                ar.setMatricula(jor.getString("matricula"));
-                ar.setNome(jor.getString("nome"));
-                Singleton.getInstance().setAluno(ar);
-                //mostrando retorno da consulta REST
-                this.etCd.setText(ar.getMatricula().toString());
                 this.etNm.setText(ar.getNome().toString());
-
-
             } else {
+                this.etNm.setText(jor.getString("mensagem".toString()));
                 //mostrar mensagem de erro na tela
                 Snackbar.make(view,jor.getString("mensagem"),Snackbar.LENGTH_LONG).show();
                 Singleton.getInstance().setMensagemErro(jor.getString("mensagem"));
