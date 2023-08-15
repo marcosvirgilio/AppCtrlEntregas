@@ -199,13 +199,14 @@ public class QRCodeFragment extends Fragment  {
     private void onSuccessListener(List<Barcode> barcodes) {
         if (barcodes.size() > 0) {
             //extraindo matricula da url da carteirinha
-            String urlLida = barcodes.get(0).getDisplayValue();
-            if (urlLida.contains("http://carteirinha.chapeco.ifsc.edu.br/")){
+            String qrCodeLido = barcodes.get(0).getDisplayValue();
+            if (qrCodeLido.trim().length()>5){
                 //extraindo matricula da url da carteirinha
-                String matricula = urlLida.replace("http://carteirinha.chapeco.ifsc.edu.br/","");
+                String idEstudante = qrCodeLido;
                 //objeto aluno
                 Aluno a = new Aluno();
-                a.setMatricula(matricula);
+                a.setQrCode(idEstudante);
+                a.setMatricula("");
                 a.setNome("");
                 //colocando objeto aluno no singleton
                 Singleton singleton = Singleton.getInstance();

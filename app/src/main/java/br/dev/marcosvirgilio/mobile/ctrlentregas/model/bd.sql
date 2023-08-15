@@ -9,3 +9,13 @@ create table protocolo (
     matricula varchar(14) not null,
     data date not null,
     PRIMARY KEY (id));
+
+ALTER TABLE protocolo ADD UNIQUE matricula (matricula, data);
+
+
+    Update aluno as a inner
+    join ( select matricula, qrcode
+          from base_testes_id_estudantes___alunos
+    	where qrcode is not NULL) as qr
+    on a.matricula = qr.matricula
+	set a.qrcode = qr.qrcode;

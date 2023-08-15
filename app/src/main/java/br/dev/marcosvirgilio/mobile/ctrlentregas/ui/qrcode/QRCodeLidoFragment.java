@@ -1,5 +1,6 @@
 package br.dev.marcosvirgilio.mobile.ctrlentregas.ui.qrcode;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -78,7 +79,7 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
         if (a.getNome().equals("")) {
             //chamar REST consultar aluno aqui
             jsonObjectReq = new JsonObjectRequest(
-                    Request.Method.POST, Constantes.getServidor() + Constantes.getEndPointConMatricula(),
+                    Request.Method.POST, Constantes.getServidor() + Constantes.getEndPointConIdEstudantil(),
                     a.toJsonObject(), this, this);
             requestQueue.add(jsonObjectReq);
         }
@@ -116,6 +117,8 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
         //mostrando retorno da consulta REST
         this.etCd.setText(ar.getMatricula().toString());
         this.etNm.setText(ar.getNome().toString());
+        this.etNm.setTextColor(Color.RED);
+        this.btConfirmar.setVisibility(View.GONE);
         Snackbar.make(view,error.toString(),Snackbar.LENGTH_LONG).show();
     }
 
@@ -127,6 +130,7 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
             JSONObject jor = new JSONObject(resposta);
             //guardar objeto aluno com nome no Singletom
             Aluno ar = new Aluno(jor);
+            ar.setQrCode(jor.getString("qrcode"));
             ar.setMatricula(jor.getString("matricula"));
             ar.setNome(jor.getString("nome"));
             Singleton.getInstance().setAluno(ar);
@@ -134,12 +138,15 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
             this.etCd.setText(ar.getMatricula().toString());
             if (jor.getBoolean("sucesso")){
                 this.etNm.setText(ar.getNome().toString());
+                this.etNm.setTextColor(Color.BLACK);
+                this.btConfirmar.setVisibility(View.VISIBLE);
             } else {
                 this.etNm.setText(jor.getString("mensagem".toString()));
                 //mostrar mensagem de erro na tela
                 Snackbar.make(view,jor.getString("mensagem"),Snackbar.LENGTH_LONG).show();
                 Singleton.getInstance().setMensagemErro(jor.getString("mensagem"));
-
+                this.etNm.setTextColor(Color.RED);
+                this.btConfirmar.setVisibility(View.GONE);
             }
         } catch (Exception e) {  e.printStackTrace(); }
 
