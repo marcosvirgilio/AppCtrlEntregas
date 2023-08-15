@@ -102,7 +102,6 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
                     Request.Method.POST,Constantes.getServidor() + Constantes.getEndPointCadProtocolo(),
                     a.toJsonObject(), response, response);
             requestQueue.add(jsonObjectReq);
-
         }
         if (view.getId() == R.id.btCancelar) {
             //chamando navegação
@@ -117,7 +116,6 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
         //mostrando retorno da consulta REST
         this.etCd.setText(ar.getMatricula().toString());
         this.etNm.setText(ar.getNome().toString());
-        this.etNm.setTextColor(Color.RED);
         this.btConfirmar.setVisibility(View.GONE);
         Snackbar.make(view,error.toString(),Snackbar.LENGTH_LONG).show();
     }
@@ -138,14 +136,12 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
             this.etCd.setText(ar.getMatricula().toString());
             if (jor.getBoolean("sucesso")){
                 this.etNm.setText(ar.getNome().toString());
-                this.etNm.setTextColor(Color.BLACK);
                 this.btConfirmar.setVisibility(View.VISIBLE);
             } else {
                 this.etNm.setText(jor.getString("mensagem".toString()));
                 //mostrar mensagem de erro na tela
                 Snackbar.make(view,jor.getString("mensagem"),Snackbar.LENGTH_LONG).show();
                 Singleton.getInstance().setMensagemErro(jor.getString("mensagem"));
-                this.etNm.setTextColor(Color.RED);
                 this.btConfirmar.setVisibility(View.GONE);
             }
         } catch (Exception e) {  e.printStackTrace(); }
