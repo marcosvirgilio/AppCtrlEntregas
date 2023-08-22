@@ -64,12 +64,8 @@ public class QRCodeFragment extends Fragment  {
     private ProcessCameraProvider cameraProvider;
     private Preview previewUseCase;
     private ImageAnalysis analysisUseCase;
-
-
     private View view = null;
-    //volley
-    private RequestQueue requestQueue;
-    private JsonObjectRequest jsonObjectReq;
+
 
 
 
@@ -83,10 +79,7 @@ public class QRCodeFragment extends Fragment  {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_qr_code, container, false);
         cameraPreview = view.findViewById(R.id.camera_preview);
-        //instanciando a fila de requests - caso o objeto seja o view
-        this.requestQueue = Volley.newRequestQueue(view.getContext());
-        //inicializando a fila de requests do SO
-        this.requestQueue.start();
+
         //qr code
         startCamera();
 
@@ -218,42 +211,4 @@ public class QRCodeFragment extends Fragment  {
         }
     }
 
-    /*
-    @Override
-    public void onErrorResponse(VolleyError error) {
-
-
-    }
-
-    @Override
-    public void onResponse(Object response) {
-
-        try {
-            String resposta = response.toString();
-            //convertendo resposta strin to json
-            JSONObject jor = new JSONObject(resposta);
-            if (jor.getBoolean("sucesso")){
-                //guardar objeto aluno com nome no Singletom
-                Aluno ar = new Aluno(jor);
-                ar.setMatricula(jor.getString("matricula"));
-                ar.setNome(jor.getString("nome"));
-                Singleton.getInstance().setAluno(ar);
-                //mostrar mensagem de sucesso
-                Snackbar.make(view,jor.getString("mensagem"),Snackbar.LENGTH_LONG).show();
-                //chamando navegação para tela de confirmação de entrega
-                NavController navController = Singleton.getInstance().getNavController();
-                navController.navigate(R.id.navigation_qrcode_lido);
-
-            } else {
-                Singleton.getInstance().setMensagemErro(jor.getString("mensagem"));
-                //chamando navegação para tela de erro
-                NavController navController = Singleton.getInstance().getNavController();
-                navController.navigate(R.id.navigation_qrcode_erro);
-
-            }
-        } catch (Exception e) {  e.printStackTrace(); }
-
-
-    }
-    */
 }

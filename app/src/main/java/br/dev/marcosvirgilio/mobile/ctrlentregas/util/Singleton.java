@@ -38,4 +38,6 @@ public class Singleton {
     public String getMensagemErro() {
         return mensagemErro;
     }
+
+
 }
