@@ -3,24 +3,23 @@ package br.dev.marcosvirgilio.mobile.ctrlentregas.ui.protocolo;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import br.dev.marcosvirgilio.mobile.ctrlentregas.ui.protocolo.placeholder.PlaceholderContent.PlaceholderItem;
 import br.dev.marcosvirgilio.mobile.ctrlentregas.databinding.FragmentConProtocolosDiaBinding;
+import br.dev.marcosvirgilio.mobile.ctrlentregas.model.Protocolo;
 
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link PlaceholderItem}.
+ * {@link RecyclerView.Adapter} that can display a {@link Protocolo}.
  * TODO: Replace the implementation with code for your data type.
  */
 public class ConProtocoloDiaRecyclerViewAdapter extends RecyclerView.Adapter<ConProtocoloDiaRecyclerViewAdapter.ViewHolder> {
 
-    private final List<PlaceholderItem> mValues;
+    private final List<Protocolo> mValues;
 
-    public ConProtocoloDiaRecyclerViewAdapter(List<PlaceholderItem> items) {
+    public ConProtocoloDiaRecyclerViewAdapter(List<Protocolo> items) {
         mValues = items;
     }
 
@@ -34,8 +33,12 @@ public class ConProtocoloDiaRecyclerViewAdapter extends RecyclerView.Adapter<Con
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        //ajustando formato da data
+        String data = mValues.get(position).getData();
+        String dataBR = data.substring(8,10) + "/" + data.substring(5,7) + "/" + data.substring(0,4);
+        //mostrando data ajustada na tela
+        holder.mIdView.setText(dataBR);
+        holder.mContentView.setText("Entregas = " + String.valueOf(mValues.get(position).getQuantidade()));
     }
 
     @Override
@@ -46,7 +49,7 @@ public class ConProtocoloDiaRecyclerViewAdapter extends RecyclerView.Adapter<Con
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final TextView mIdView;
         public final TextView mContentView;
-        public PlaceholderItem mItem;
+        public Protocolo mItem;
 
         public ViewHolder(FragmentConProtocolosDiaBinding binding) {
             super(binding.getRoot());

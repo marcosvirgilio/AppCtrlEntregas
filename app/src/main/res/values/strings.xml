@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Controle de Entegas</string>
-    <string name="title_home">Home</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_home">Início</string>
+    <string name="title_notifications">Avisos</string>
     <string name="title_qrcode">QRCode</string>
     <string name="title_qrcode_resultado">Identificação</string>
     <string name="id">Matrícula</string>
@@ -17,4 +17,5 @@
     <string name="title_qrcode_erro">Erro</string>
     <string name="title_mensagem">Mensagem</string>
     <string name="title_proxima">Próxima Leitura</string>
+    <string name="title_con_protocolos">Con. Entregas</string>
 </resources>
