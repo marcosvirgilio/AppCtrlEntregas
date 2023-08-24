@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import br.dev.marcosvirgilio.mobile.ctrlentregas.R;
 import br.dev.marcosvirgilio.mobile.ctrlentregas.model.Protocolo;
 import br.dev.marcosvirgilio.mobile.ctrlentregas.util.Constantes;
+import br.dev.marcosvirgilio.mobile.ctrlentregas.util.SingletonVolley;
 
 /**
  * A fragment representing a list of Items.
@@ -81,7 +82,7 @@ public class ConProtocolosDiaFragment extends Fragment implements View.OnClickLi
         this.view = inflater.inflate(R.layout.fragment_con_protocolos_dia_list, container, false);
 
         //instanciando a fila de requests - caso o objeto seja o view
-        this.requestQueue = Volley.newRequestQueue(view.getContext());
+        this.requestQueue = SingletonVolley.getInstance(getActivity().getApplicationContext()).getRequestQueue();
         //inicializando a fila de requests do SO
         this.requestQueue.start();
         //request com array de parâmetros em branco

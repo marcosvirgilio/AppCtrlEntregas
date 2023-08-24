@@ -17,15 +17,15 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONObject;
 
 import br.dev.marcosvirgilio.mobile.ctrlentregas.util.Constantes;
-import br.dev.marcosvirgilio.mobile.ctrlentregas.util.Singleton;
+import br.dev.marcosvirgilio.mobile.ctrlentregas.util.SingletonNavigation;
 import br.dev.marcosvirgilio.mobile.ctrlentregas.R;
 import br.dev.marcosvirgilio.mobile.ctrlentregas.model.Aluno;
+import br.dev.marcosvirgilio.mobile.ctrlentregas.util.SingletonVolley;
 
 
 public class QRCodeLidoFragment extends Fragment implements View.OnClickListener, Response.ErrorListener, Response.Listener {
@@ -49,15 +49,15 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         this.view = inflater.inflate(R.layout.fragment_qr_code_lido, container, false);
-        this.navController  = Singleton.getInstance().getNavController();
+        this.navController  = SingletonNavigation.getInstance().getNavController();
         this.etCd = (TextView) view.findViewById(R.id.etCodigo);
         this.etNm = (TextView)view.findViewById(R.id.etNome);
         this.btCancelar = view.findViewById(R.id.btCancelar);
         this.tvMensagem = (TextView) view.findViewById(R.id.mensagem);
         this.btConfirmar = view.findViewById(R.id.btConfirmar);
         this.btConfirmar.setVisibility(View.GONE);
-        //instanciando a fila de requests - caso o objeto seja o view
-        this.requestQueue = Volley.newRequestQueue(view.getContext());
+        //Fila de requests do Singleton
+        this.requestQueue = SingletonVolley.getInstance(getActivity().getApplicationContext()).getRequestQueue();
         //inicializando a fila de requests do SO
         this.requestQueue.start();
         //desabilitando botões
@@ -66,7 +66,7 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
         this.btCancelar.setOnClickListener(this);
         this.btConfirmar.setOnClickListener(this);
         //recuperando objeto aluno do singleton
-        Aluno a = Singleton.getInstance().getAluno();
+        Aluno a = SingletonNavigation.getInstance().getAluno();
         if (a.getNome().equals("") && a.getMatricula().equals("")) {
             //chamar REST consultar aluno aqui
             jsonObjectReq = new JsonObjectRequest(
@@ -85,8 +85,7 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
     public void onClick(View view) {
         if (view.getId() == R.id.btConfirmar) {
             //objeto response
-            this.requestQueue.start();
-            ConfirmarVoleyResponse response = new ConfirmarVoleyResponse(view);
+            QRCodeLidoClickBotaoResponse response = new QRCodeLidoClickBotaoResponse(view);
             //chamar REST salvar aqui
             Aluno a = new Aluno();
             a.setMatricula(this.etCd.getText().toString());
@@ -108,8 +107,8 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
     @Override
     public void onErrorResponse(VolleyError error) {
 
-        Singleton.getInstance().setMensagemErro(error.toString());
-        Aluno ar = Singleton.getInstance().getAluno();
+        SingletonNavigation.getInstance().setMensagemErro(error.toString());
+        Aluno ar = SingletonNavigation.getInstance().getAluno();
         //mostrando retorno da consulta REST
         this.etCd.setText(ar.getMatricula().toString());
         this.etNm.setText(ar.getNome().toString());
@@ -131,14 +130,14 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
             this.etNm.setText(jor.getString("nome").toString());
             //guardar objeto aluno com nome no Singletom
             Aluno ar = new Aluno(jor);
-            Singleton.getInstance().setAluno(ar);
+            SingletonNavigation.getInstance().setAluno(ar);
             if (jor.getBoolean("sucesso")){
                 this.btConfirmar.setVisibility(View.VISIBLE);
             } else {
                 this.tvMensagem.setText(jor.getString("mensagem").toString());
                 //mostrar mensagem de erro na tela
                 Snackbar.make(view,jor.getString("mensagem"),Snackbar.LENGTH_LONG).show();
-                Singleton.getInstance().setMensagemErro(jor.getString("mensagem"));
+                SingletonNavigation.getInstance().setMensagemErro(jor.getString("mensagem"));
             }
 
         } catch (Exception e) {  e.printStackTrace(); }

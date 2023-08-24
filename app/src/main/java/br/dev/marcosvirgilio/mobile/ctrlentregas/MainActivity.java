@@ -11,7 +11,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import br.dev.marcosvirgilio.mobile.ctrlentregas.databinding.ActivityMainBinding;
-import br.dev.marcosvirgilio.mobile.ctrlentregas.util.Singleton;
+import br.dev.marcosvirgilio.mobile.ctrlentregas.util.SingletonNavigation;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
                 R.id.navigation_notifications)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-        Singleton.getInstance().setNavController(navController);
+        SingletonNavigation.getInstance().setNavController(navController);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
     }

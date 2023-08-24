@@ -11,19 +11,18 @@ import com.google.android.material.snackbar.Snackbar;
 import org.json.JSONObject;
 
 import br.dev.marcosvirgilio.mobile.ctrlentregas.R;
-import br.dev.marcosvirgilio.mobile.ctrlentregas.model.Aluno;
-import br.dev.marcosvirgilio.mobile.ctrlentregas.util.Singleton;
+import br.dev.marcosvirgilio.mobile.ctrlentregas.util.SingletonNavigation;
 
-public class ConfirmarVoleyResponse implements Response.ErrorListener, Response.Listener{
+public class QRCodeLidoClickBotaoResponse implements Response.ErrorListener, Response.Listener{
 
     private View view;
-    public ConfirmarVoleyResponse(View view){
+    public QRCodeLidoClickBotaoResponse(View view){
         this.view = view;
     }
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        Singleton.getInstance().setMensagemErro(error.toString());
+        SingletonNavigation.getInstance().setMensagemErro(error.toString());
         //mostrar mensagem de erro na tela
         Snackbar.make(view,error.toString(),Snackbar.LENGTH_LONG).show();
     }
@@ -38,7 +37,7 @@ public class ConfirmarVoleyResponse implements Response.ErrorListener, Response.
                 //mostrar mensagem de erro na tela
                 Snackbar.make(view,jor.getString("mensagem"),Snackbar.LENGTH_LONG).show();
                 //chamando navegação para tela de erro
-                NavController navController = Singleton.getInstance().getNavController();
+                NavController navController = SingletonNavigation.getInstance().getNavController();
                 navController.navigate(R.id.navigation_qrcode);
             } else {
                 //mostrar mensagem de erro na tela

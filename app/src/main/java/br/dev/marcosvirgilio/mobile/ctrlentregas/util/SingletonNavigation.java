@@ -4,15 +4,15 @@ import androidx.navigation.NavController;
 
 import br.dev.marcosvirgilio.mobile.ctrlentregas.model.Aluno;
 
-public class Singleton {
-    private static final Singleton instance = new Singleton();
+public class SingletonNavigation {
+    private static final SingletonNavigation instance = new SingletonNavigation();
     private Aluno aluno = new Aluno();
     private NavController navController = null;
     private String mensagemErro = "";
 
-    private Singleton() {}
+    private SingletonNavigation() {}
 
-    public static Singleton getInstance() {
+    public static SingletonNavigation getInstance() {
         return instance;
     }
     public NavController getNavController() {

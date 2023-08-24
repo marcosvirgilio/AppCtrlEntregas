@@ -23,15 +23,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.mlkit.vision.barcode.BarcodeScanner;
 import com.google.mlkit.vision.barcode.BarcodeScanning;
@@ -39,15 +31,12 @@ import com.google.mlkit.vision.barcode.common.Barcode;
 import com.google.mlkit.vision.common.InputImage;
 
 
-import org.json.JSONObject;
-
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import br.dev.marcosvirgilio.mobile.ctrlentregas.util.Constantes;
-import br.dev.marcosvirgilio.mobile.ctrlentregas.util.Singleton;
+import br.dev.marcosvirgilio.mobile.ctrlentregas.util.SingletonNavigation;
 import br.dev.marcosvirgilio.mobile.ctrlentregas.R;
 import br.dev.marcosvirgilio.mobile.ctrlentregas.model.Aluno;
 
@@ -202,10 +191,10 @@ public class QRCodeFragment extends Fragment  {
                 a.setMatricula("");
                 a.setNome("");
                 //colocando objeto aluno no singleton
-                Singleton singleton = Singleton.getInstance();
-                singleton.setAluno(a);
+                SingletonNavigation singletonNavigation = SingletonNavigation.getInstance();
+                singletonNavigation.setAluno(a);
                 //chamando navegação para tela de confirmação de entrega
-                NavController navController = Singleton.getInstance().getNavController();
+                NavController navController = SingletonNavigation.getInstance().getNavController();
                 navController.navigate(R.id.navigation_qrcode_lido);
             }
         }
