@@ -1,10 +1,7 @@
 package br.dev.marcosvirgilio.mobile.ctrlentregas.ui.qrcode;
 
-import android.graphics.Color;
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 
@@ -12,9 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import com.android.volley.Request;
@@ -35,8 +30,8 @@ import br.dev.marcosvirgilio.mobile.ctrlentregas.model.Aluno;
 
 public class QRCodeLidoFragment extends Fragment implements View.OnClickListener, Response.ErrorListener, Response.Listener {
 
-    private EditText etCd;
-    private EditText etNm;
+    private TextView etCd;
+    private TextView etNm;
 
     private TextView tvMensagem;
     private Button btConfirmar;
@@ -55,10 +50,10 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
         // Inflate the layout for this fragment
         this.view = inflater.inflate(R.layout.fragment_qr_code_lido, container, false);
         this.navController  = Singleton.getInstance().getNavController();
-        this.etCd = view.findViewById(R.id.etCodigo);
-        this.etNm = view.findViewById(R.id.etNome);
+        this.etCd = (TextView) view.findViewById(R.id.etCodigo);
+        this.etNm = (TextView)view.findViewById(R.id.etNome);
         this.btCancelar = view.findViewById(R.id.btCancelar);
-        this.tvMensagem = view.findViewById(R.id.mensagem);
+        this.tvMensagem = (TextView) view.findViewById(R.id.mensagem);
         this.btConfirmar = view.findViewById(R.id.btConfirmar);
         this.btConfirmar.setVisibility(View.GONE);
         //instanciando a fila de requests - caso o objeto seja o view
@@ -120,7 +115,7 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
         this.etNm.setText(ar.getNome().toString());
         this.tvMensagem.setText(error.toString());
         Snackbar.make(view,error.toString(),Snackbar.LENGTH_LONG).show();
-        this.requestQueue.stop();
+
     }
 
     @Override
@@ -131,24 +126,21 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
             String resposta = response.toString();
             //convertendo resposta strin to json
             JSONObject jor = new JSONObject(resposta);
+            //mostrando retorno da consulta REST
+            this.etCd.setText(jor.getString("matricula").toString());
+            this.etNm.setText(jor.getString("nome").toString());
             //guardar objeto aluno com nome no Singletom
             Aluno ar = new Aluno(jor);
-            ar.setQrCode(jor.getString("qrcode"));
-            ar.setMatricula(jor.getString("matricula"));
-            ar.setNome(jor.getString("nome"));
             Singleton.getInstance().setAluno(ar);
-            //mostrando retorno da consulta REST
-            this.etCd.setText(ar.getMatricula().toString());
-            this.etNm.setText(ar.getNome().toString());
             if (jor.getBoolean("sucesso")){
                 this.btConfirmar.setVisibility(View.VISIBLE);
             } else {
-                this.tvMensagem.setText(jor.getString("mensagem".toString()));
+                this.tvMensagem.setText(jor.getString("mensagem").toString());
                 //mostrar mensagem de erro na tela
                 Snackbar.make(view,jor.getString("mensagem"),Snackbar.LENGTH_LONG).show();
                 Singleton.getInstance().setMensagemErro(jor.getString("mensagem"));
             }
-            this.requestQueue.stop();
+
         } catch (Exception e) {  e.printStackTrace(); }
 
 

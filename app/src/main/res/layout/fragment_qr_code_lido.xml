@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/title_codigo" />
 
-            <EditText
+            <TextView
                 android:id="@+id/etCodigo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/title_nome" />
 
-            <EditText
+            <TextView
                 android:id="@+id/etNome"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
                 android:inputType="text" />
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize" />
+                android:layout_height="50dp" />
 
             <TextView
                 android:id="@+id/mensagem"
@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content" />
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize" />
+                android:layout_height="50dp" />
             <Button
                 android:id="@+id/btConfirmar"
                 android:layout_width="match_parent"
@@ -64,7 +64,7 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize" />
+                android:layout_height="50dp" />
 
             <Button
                 android:id="@+id/btCancelar"
