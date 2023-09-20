@@ -95,7 +95,7 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
         }
         if (view.getId() == R.id.btCancelar) {
             //chamando navegação
-            navController.navigate(R.id.navigation_qrcode);
+            SingletonNavigation.getInstance().getNavController().navigate(R.id.navigation_qrcode);
         }
     }
 
