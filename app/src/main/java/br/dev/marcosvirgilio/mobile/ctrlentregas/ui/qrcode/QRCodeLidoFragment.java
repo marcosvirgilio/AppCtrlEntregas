@@ -36,11 +36,8 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
     private TextView tvMensagem;
     private Button btConfirmar;
     private Button btCancelar;
-    private NavController navController;
     View view;
-
     //volley
-    private RequestQueue requestQueue;
     private JsonObjectRequest jsonObjectReq;
 
 
@@ -49,17 +46,14 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         this.view = inflater.inflate(R.layout.fragment_qr_code_lido, container, false);
-        this.navController  = SingletonNavigation.getInstance().getNavController();
         this.etCd = (TextView) view.findViewById(R.id.etCodigo);
         this.etNm = (TextView)view.findViewById(R.id.etNome);
         this.btCancelar = view.findViewById(R.id.btCancelar);
         this.tvMensagem = (TextView) view.findViewById(R.id.mensagem);
         this.btConfirmar = view.findViewById(R.id.btConfirmar);
         this.btConfirmar.setVisibility(View.GONE);
-        //Fila de requests do Singleton
-        this.requestQueue = SingletonVolley.getInstance(getActivity().getApplicationContext()).getRequestQueue();
-        //inicializando a fila de requests do SO
-        this.requestQueue.start();
+        //Fila de requests do Singleton iniciada
+        SingletonVolley.getInstance(getActivity().getApplicationContext()).getRequestQueue().start();
         //desabilitando botões
         this.ativarBotoes(false);
         //definindo listeners
@@ -72,7 +66,8 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
             jsonObjectReq = new JsonObjectRequest(
                     Request.Method.POST, Constantes.getServidor() + Constantes.getEndPointConIdEstudantil(),
                     a.toJsonObject(), this, this);
-            requestQueue.add(jsonObjectReq);
+            //seguindo com o request pelo singleton
+            SingletonVolley.getInstance(this.getContext()).addToRequestQueue(jsonObjectReq);
         }
 
         return this.view;
@@ -95,8 +90,8 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
                     a.toJsonObject(), response, response);
             //econdendo botão para evitar 2 clicks
             this.btConfirmar.setVisibility(View.GONE);
-            //seguindo com o request
-            requestQueue.add(jsonObjectReq);
+            //seguindo com o request pelo singleton
+            SingletonVolley.getInstance(this.getContext()).addToRequestQueue(jsonObjectReq);
         }
         if (view.getId() == R.id.btCancelar) {
             //chamando navegação
