@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_horizontal|top"
-                android:text="Versão 1.0.20230822 "
+                android:text="Versão 1.1.20230922 "
                 android:textAlignment="gravity"
                 android:textColor="@color/black" />
         </LinearLayout>

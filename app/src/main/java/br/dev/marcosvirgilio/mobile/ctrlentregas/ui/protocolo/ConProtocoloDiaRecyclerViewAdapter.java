@@ -38,7 +38,9 @@ public class ConProtocoloDiaRecyclerViewAdapter extends RecyclerView.Adapter<Con
         String dataBR = data.substring(8,10) + "/" + data.substring(5,7) + "/" + data.substring(0,4);
         //mostrando data ajustada na tela
         holder.mIdView.setText(dataBR);
-        holder.mContentView.setText("Entregas = " + String.valueOf(mValues.get(position).getQuantidade()));
+        String info = "Turno = " + String.valueOf(mValues.get(position).getTurno()) +
+                "  Qtd = " + String.valueOf(mValues.get(position).getQuantidade());
+        holder.mContentView.setText(info);
     }
 
     @Override
