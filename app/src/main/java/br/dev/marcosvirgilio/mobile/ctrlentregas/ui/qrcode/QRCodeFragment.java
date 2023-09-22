@@ -194,8 +194,7 @@ public class QRCodeFragment extends Fragment  {
                 SingletonNavigation singletonNavigation = SingletonNavigation.getInstance();
                 singletonNavigation.setAluno(a);
                 //chamando navegação para tela de confirmação de entrega
-                NavController navController = SingletonNavigation.getInstance().getNavController();
-                navController.navigate(R.id.navigation_qrcode_lido);
+                singletonNavigation.getInstance().getNavController().navigate(R.id.navigation_qrcode_lido);
             }
         }
     }

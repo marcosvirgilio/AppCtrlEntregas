@@ -12,6 +12,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import br.dev.marcosvirgilio.mobile.ctrlentregas.databinding.ActivityMainBinding;
 import br.dev.marcosvirgilio.mobile.ctrlentregas.util.SingletonNavigation;
+import br.dev.marcosvirgilio.mobile.ctrlentregas.util.SingletonVolley;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,8 +35,14 @@ public class MainActivity extends AppCompatActivity {
                 R.id.navigation_qrcode_lido,
                 R.id.navigation_notifications)
                 .build();
+
+        /*INICIALIZANDO SINGLETONS*/
+        //Fila de requests do Singleton iniciada
+        SingletonVolley.getInstance(getApplicationContext()).getRequestQueue().start();
+        //Nav controler sendo passado para o Singleton
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         SingletonNavigation.getInstance().setNavController(navController);
+        //Config do appBarConfiguration
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
     }

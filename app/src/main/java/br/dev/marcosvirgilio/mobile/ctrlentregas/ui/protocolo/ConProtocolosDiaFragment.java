@@ -45,7 +45,6 @@ public class ConProtocolosDiaFragment extends Fragment implements View.OnClickLi
     View view;
 
     //volley
-    private RequestQueue requestQueue;
     private JsonArrayRequest jsonArrayReq;
 
 
@@ -80,11 +79,6 @@ public class ConProtocolosDiaFragment extends Fragment implements View.OnClickLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         this.view = inflater.inflate(R.layout.fragment_con_protocolos_dia_list, container, false);
-
-        //instanciando a fila de requests - caso o objeto seja o view
-        this.requestQueue = SingletonVolley.getInstance(getActivity().getApplicationContext()).getRequestQueue();
-        //inicializando a fila de requests do SO
-        this.requestQueue.start();
         //request com array de parâmetros em branco
         this.consultarEndPoint();
         return this.view;
@@ -95,7 +89,8 @@ public class ConProtocolosDiaFragment extends Fragment implements View.OnClickLi
             jsonArrayReq = new JsonArrayRequest(
                     Request.Method.GET, Constantes.getServidor() + Constantes.getEndPointConProtocolosDia(),
                     new JSONArray ("[]"), this, this);
-            requestQueue.add(jsonArrayReq);
+            //adicionando a fila via singleton
+            SingletonVolley.getInstance(getActivity().getApplicationContext()).addToRequestQueue(jsonArrayReq);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }

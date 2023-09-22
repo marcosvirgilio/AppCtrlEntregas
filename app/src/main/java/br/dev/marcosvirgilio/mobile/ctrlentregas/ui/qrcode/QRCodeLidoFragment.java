@@ -52,8 +52,7 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
         this.tvMensagem = (TextView) view.findViewById(R.id.mensagem);
         this.btConfirmar = view.findViewById(R.id.btConfirmar);
         this.btConfirmar.setVisibility(View.GONE);
-        //Fila de requests do Singleton iniciada
-        SingletonVolley.getInstance(getActivity().getApplicationContext()).getRequestQueue().start();
+
         //desabilitando botões
         this.ativarBotoes(false);
         //definindo listeners

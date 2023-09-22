@@ -37,8 +37,7 @@ public class QRCodeLidoClickBotaoResponse implements Response.ErrorListener, Res
                 //mostrar mensagem de erro na tela
                 Snackbar.make(view,jor.getString("mensagem"),Snackbar.LENGTH_LONG).show();
                 //chamando navegação para tela de erro
-                NavController navController = SingletonNavigation.getInstance().getNavController();
-                navController.navigate(R.id.navigation_qrcode);
+                SingletonNavigation.getInstance().getNavController().navigate(R.id.navigation_qrcode);
             } else {
                 //mostrar mensagem de erro na tela
                 Snackbar.make(view,jor.getString("mensagem"),Snackbar.LENGTH_LONG).show();
