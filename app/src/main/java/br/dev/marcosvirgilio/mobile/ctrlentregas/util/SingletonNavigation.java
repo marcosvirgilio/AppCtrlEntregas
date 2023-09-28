@@ -10,6 +10,8 @@ public class SingletonNavigation {
     private static SingletonNavigation instance;
     private Aluno aluno = new Aluno();
     private NavController navController = null;
+
+    private String lastQrcodeLido = "";
     private String mensagemErro = "";
 
     private SingletonNavigation() {}
@@ -45,5 +47,11 @@ public class SingletonNavigation {
         return mensagemErro;
     }
 
+    public String getLastQrcodeLido() {
+        return lastQrcodeLido;
+    }
 
+    public void setLastQrcodeLido(String lastQrcodeLido) {
+        this.lastQrcodeLido = lastQrcodeLido;
+    }
 }

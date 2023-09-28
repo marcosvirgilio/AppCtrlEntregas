@@ -24,6 +24,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.Request;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.mlkit.vision.barcode.BarcodeScanner;
 import com.google.mlkit.vision.barcode.BarcodeScanning;
@@ -31,14 +34,18 @@ import com.google.mlkit.vision.barcode.common.Barcode;
 import com.google.mlkit.vision.common.InputImage;
 
 
+import org.json.JSONObject;
+
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import br.dev.marcosvirgilio.mobile.ctrlentregas.util.Constantes;
 import br.dev.marcosvirgilio.mobile.ctrlentregas.util.SingletonNavigation;
 import br.dev.marcosvirgilio.mobile.ctrlentregas.R;
 import br.dev.marcosvirgilio.mobile.ctrlentregas.model.Aluno;
+import br.dev.marcosvirgilio.mobile.ctrlentregas.util.SingletonVolley;
 
 
 public class QRCodeFragment extends Fragment  {
@@ -55,7 +62,7 @@ public class QRCodeFragment extends Fragment  {
     private ImageAnalysis analysisUseCase;
     private View view = null;
 
-
+    private JsonObjectRequest jsonObjectReq;
 
 
     private void getPermissions() {
@@ -182,19 +189,39 @@ public class QRCodeFragment extends Fragment  {
         if (barcodes.size() > 0) {
             //extraindo matricula da url da carteirinha
             String qrCodeLido = barcodes.get(0).getDisplayValue();
-            if (qrCodeLido.trim().length()>5){
-                //extraindo matricula da url da carteirinha
-                String idEstudante = qrCodeLido;
+            if (!qrCodeLido.trim().equals(SingletonNavigation.getInstance().getLastQrcodeLido())){
+                SingletonNavigation.getInstance().setLastQrcodeLido(qrCodeLido.trim());
                 //objeto aluno
-                Aluno a = new Aluno();
-                a.setQrCode(idEstudante);
-                a.setMatricula("");
-                a.setNome("");
-                //colocando objeto aluno no singleton
-                SingletonNavigation singletonNavigation = SingletonNavigation.getInstance();
-                singletonNavigation.setAluno(a);
-                //chamando navegação para tela de confirmação de entrega
-                singletonNavigation.getInstance().getNavController().navigate(R.id.navigation_qrcode_lido);
+                Aluno alunoRequest = new Aluno();
+                alunoRequest.setQrCode(qrCodeLido.trim());
+                alunoRequest.setMatricula("");
+                alunoRequest.setNome("");
+                //chamar REST consultar aluno aqui
+                jsonObjectReq = new JsonObjectRequest(
+                        Request.Method.GET, Constantes.getServidor() + Constantes.getEndPointConIdEstudantil(), alunoRequest.toJsonObject(),
+                        response -> {
+                            try {
+                                if (response.getBoolean("sucesso")){
+                                    Aluno alunoResponse = new Aluno();
+                                    alunoResponse.setMatricula(response.getString("matricula"));
+                                    alunoResponse.setNome(response.getString("nome"));
+                                    //colocando objeto aluno no singleton
+                                    SingletonNavigation.getInstance().setAluno(alunoResponse);
+                                    //chamando navegação para tela de confirmação de entrega
+                                    SingletonNavigation.getInstance().getNavController().navigate(R.id.navigation_qrcode_lido);
+                                } else {
+                                    Snackbar.make(view,response.getString("mensagem"),Snackbar.LENGTH_LONG).show();
+                                }
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }, errorResponse -> {
+                            Snackbar.make(view,errorResponse.toString(),Snackbar.LENGTH_LONG).show();
+                        }
+                );
+                //seguindo com o request pelo singleton
+                SingletonVolley.getInstance(this.getContext()).addToRequestQueue(jsonObjectReq);
             }
         }
     }

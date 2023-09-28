@@ -48,49 +48,16 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
         super.onViewCreated(view, savedInstanceState);
         this.btConfirmar.setVisibility(View.GONE);
         //recuperando objeto aluno do singleton
-        Aluno a = SingletonNavigation.getInstance().getAluno();
-        if (a.getNome().equals("") && a.getMatricula().equals("") && !a.getQrCode().equals("")) {
-            //chamar REST consultar aluno aqui
-            jsonObjectReq = new JsonObjectRequest(
-                    Request.Method.GET, Constantes.getServidor() + Constantes.getEndPointConIdEstudantil(),
-                    a.toJsonObject(), response -> {
-                        try {
-                            btConfirmar.setVisibility(View.GONE);
-                            String resposta = response.toString();
-                            //convertendo resposta strin to json
-                            JSONObject jor = new JSONObject(resposta);
-                            //mostrando retorno da consulta REST
-                            etCd.setText(jor.getString("matricula").toString());
-                            etNm.setText(jor.getString("nome").toString());
-                            //guardar objeto aluno com nome no Singletom
-                            Aluno ar = new Aluno(jor);
-                            SingletonNavigation.getInstance().setAluno(ar);
-                            if (jor.getBoolean("sucesso")){
-                                btConfirmar.setVisibility(View.VISIBLE);
-                            } else {
-                                tvMensagem.setText(jor.getString("mensagem").toString());
-                                //mostrar mensagem de erro na tela
-                                Snackbar.make(view,jor.getString("mensagem"),Snackbar.LENGTH_LONG).show();
-                                SingletonNavigation.getInstance().setMensagemErro(jor.getString("mensagem"));
-                            }
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }, errorResponse -> {
-                            SingletonNavigation.getInstance().setMensagemErro(errorResponse.toString());
-                            Aluno ar = SingletonNavigation.getInstance().getAluno();
-                            //mostrando retorno da consulta REST
-                            etCd.setText(ar.getMatricula().toString());
-                            etNm.setText(ar.getNome().toString());
-                            tvMensagem.setText(errorResponse.toString());
-                            Snackbar.make(view,errorResponse.toString(),Snackbar.LENGTH_LONG).show();
-                    });
-            //seguindo com o request pelo singleton
-            SingletonVolley.getInstance(this.getContext()).addToRequestQueue(jsonObjectReq);
+        Aluno aluno = SingletonNavigation.getInstance().getAluno();
+        if (!aluno.getNome().equals("") && !aluno.getMatricula().equals("")) {
+            this.etCd.setText(aluno.getMatricula());
+            this.etNm.setText(aluno.getNome());
+            btConfirmar.setVisibility(View.VISIBLE);
+        } else {
+            //mostrar mensagem de erro na tela
+            this.tvMensagem.setText("Problema na leitura do QRCODE");
+            Snackbar.make(view,"Problema na leitura do QRCODE",Snackbar.LENGTH_LONG).show();
         }
-
-
     }
 
     @Override
@@ -111,8 +78,8 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onClick(View view) {
+        /*BOTAO CONFIRMAR*/
         if (view.getId() == R.id.btConfirmar) {
-
             //chamar REST salvar aqui
             Aluno a = new Aluno();
             a.setMatricula(this.etCd.getText().toString());
@@ -146,6 +113,7 @@ public class QRCodeLidoFragment extends Fragment implements View.OnClickListener
             //seguindo com o request pelo singleton
             SingletonVolley.getInstance(this.getContext()).addToRequestQueue(jsonObjectReq);
         }
+        /*BOTAO CANCELAR*/
         if (view.getId() == R.id.btCancelar) {
             //chamando navegação
             SingletonNavigation.getInstance().getNavController().navigate(R.id.navigation_qrcode);
