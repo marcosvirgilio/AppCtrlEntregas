@@ -37,8 +37,7 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         /*INICIALIZANDO SINGLETONS*/
-        //Fila de requests do Singleton iniciada
-        SingletonVolley.getInstance(getApplicationContext()).getRequestQueue().start();
+
         //Nav controler sendo passado para o Singleton
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         SingletonNavigation.getInstance().setNavController(navController);
