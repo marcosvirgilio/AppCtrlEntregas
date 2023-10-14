@@ -17,7 +17,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -30,24 +29,16 @@ import java.util.ArrayList;
 import br.dev.marcosvirgilio.mobile.ctrlentregas.R;
 import br.dev.marcosvirgilio.mobile.ctrlentregas.model.Protocolo;
 import br.dev.marcosvirgilio.mobile.ctrlentregas.util.Constantes;
-import br.dev.marcosvirgilio.mobile.ctrlentregas.util.SingletonVolley;
 
 /**
  * A fragment representing a list of Items.
  */
 public class ConProtocolosDiaFragment extends Fragment implements View.OnClickListener, Response.ErrorListener, Response.Listener {
 
-    // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
     private int mColumnCount = 1;
-
     View view;
-
     //volley
-    private JsonArrayRequest jsonArrayReq;
-
-
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -56,7 +47,7 @@ public class ConProtocolosDiaFragment extends Fragment implements View.OnClickLi
     public ConProtocolosDiaFragment() {
     }
 
-    // TODO: Customize parameter initialization
+
     @SuppressWarnings("unused")
     public static ConProtocolosDiaFragment newInstance(int columnCount) {
         ConProtocolosDiaFragment fragment = new ConProtocolosDiaFragment();
@@ -86,11 +77,14 @@ public class ConProtocolosDiaFragment extends Fragment implements View.OnClickLi
 
     public void consultarEndPoint(){
         try {
-            jsonArrayReq = new JsonArrayRequest(
+            JsonArrayRequest jsonArrayReq = new JsonArrayRequest(
                     Request.Method.GET, Constantes.getServidor() + Constantes.getEndPointConProtocolosDia(),
                     new JSONArray ("[]"), this, this);
             //adicionando a fila via singleton
-            SingletonVolley.getInstance(getActivity().getApplicationContext()).addToRequestQueue(jsonArrayReq);
+            //seguindo com o request
+            RequestQueue requestQueueConEntregas = Volley.newRequestQueue(getActivity().getApplicationContext());
+            requestQueueConEntregas.add(jsonArrayReq);
+            requestQueueConEntregas.start();
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }

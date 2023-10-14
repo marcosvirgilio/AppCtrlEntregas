@@ -8,12 +8,12 @@
     <string name="nome">Nome</string>
     <string name="confirmar">Confirmar</string>
     <string name="cancelar">Cancelar</string>
-    <!-- TODO: Remove or change this placeholder text -->
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_nome">Nome</string>
     <string name="title_codigo">Matrícula</string>
     <string name="title_confirmar">Confirmar Entrega</string>
-    <string name="title_cancelar">Cancelar Entrega / Nova Leitura</string>
+    <string name="title_cancelar">Nova Leitura | Cancelar Entrega</string>
     <string name="title_qrcode_erro">Erro</string>
     <string name="title_mensagem">Mensagem</string>
     <string name="title_proxima">Próxima Leitura</string>

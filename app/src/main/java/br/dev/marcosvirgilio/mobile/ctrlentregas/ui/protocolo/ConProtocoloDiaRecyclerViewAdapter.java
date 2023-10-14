@@ -13,7 +13,6 @@ import java.util.List;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Protocolo}.
- * TODO: Replace the implementation with code for your data type.
  */
 public class ConProtocoloDiaRecyclerViewAdapter extends RecyclerView.Adapter<ConProtocoloDiaRecyclerViewAdapter.ViewHolder> {
 

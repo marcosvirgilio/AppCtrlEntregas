@@ -18,21 +18,16 @@
         tools:layout="@layout/fragment_notifications" />
 
     <fragment
-        android:id="@+id/navigation_qrcode"
-        android:name="br.dev.marcosvirgilio.mobile.ctrlentregas.ui.qrcode.QRCodeFragment"
-        android:label="@string/title_qrcode"
-        tools:layout="@layout/fragment_qr_code" />
-    <fragment
-        android:id="@+id/navigation_qrcode_lido"
-        android:name="br.dev.marcosvirgilio.mobile.ctrlentregas.ui.qrcode.QRCodeLidoFragment"
-        android:label="@string/title_qrcode"
-        tools:layout="@layout/fragment_qr_code_lido" />
-
-    <fragment
         android:id="@+id/navigation_con_protocolos"
         android:name="br.dev.marcosvirgilio.mobile.ctrlentregas.ui.protocolo.ConProtocolosDiaFragment"
         android:label="@string/title_con_protocolos"
         tools:layout="@layout/fragment_con_protocolos_dia_list" />
+
+    <activity
+        android:id="@+id/navigation_qrcode"
+        android:name="br.dev.marcosvirgilio.mobile.ctrlentregas.ui.qrcode.QRCodeActivity"
+        android:label="@string/title_qrcode"
+        tools:layout="@layout/activity_qrcode" />
 
 
 </navigation>

@@ -8,6 +8,10 @@
     android:layout_height="match_parent"
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
+    android:layout_marginBottom="?attr/actionBarSize"
     app:layoutManager="LinearLayoutManager"
     tools:context=".ui.protocolo.ConProtocolosDiaFragment"
-    tools:listitem="@layout/fragment_con_protocolos_dia" />
+    tools:listitem="@layout/fragment_con_protocolos_dia" >
+
+
+</androidx.recyclerview.widget.RecyclerView>
